@@ -1,1 +1,2 @@
+recursive-include pithy/cli *
 recursive-include pithy/cli/templates *

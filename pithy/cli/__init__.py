@@ -34,8 +34,8 @@ def cli():
 @click.pass_context
 @click.option('--project-type', prompt=click.style(u"请选择项目类型,输入api或者app", fg='green'),
               callback=_validate_project_type, help=u"请选择项目类型,输入api或者app")
-@click.option('--project-name', prompt=click.style(u"请输入项目名称,如sargeras-api-test", fg='green'),
-              callback=_validate_project_name, help=u"请输入项目名称,如sargeras-api-test")
+@click.option('--project-name', prompt=click.style(u"请输入项目名称,如pithy-api-test", fg='green'),
+              callback=_validate_project_name, help=u"请输入项目名称,如pithy-api-test")
 def init(ctx, project_type, project_name):
     """
     生成接口测试项目

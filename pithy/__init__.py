@@ -7,4 +7,4 @@ from .human_time import HumanDateTime
 from .json_processor import JSONProcessor
 from .cfg import Config
 
-config = get_config = config_manager = Config
+get_config = config_manager = Config
