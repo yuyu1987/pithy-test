@@ -1,0 +1,16 @@
+#!/usr/bin/python
+# coding=utf-8
+from apis.pithy_api import PithyAPP
+
+
+class TestLogin:
+
+    def test_login(self):
+        """
+        测试正确登录
+        """
+
+        user = PithyAPP()
+        response = user.login(13100000000, '123abc').json
+        assert response.code == '200'
+        assert response.msg == 'success'

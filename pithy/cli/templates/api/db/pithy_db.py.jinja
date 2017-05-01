@@ -1,0 +1,10 @@
+#!/usr/bin/python
+# coding=utf-8
+from pithy import db
+from pithy import config_manager
+
+# 获取配置管理器
+config = config_manager()
+
+# 生成数据库实例
+pithy_db = db(config['PITHY_DB'], name='pithy_db')

@@ -1,0 +1,23 @@
+#!/usr/bin/python
+# coding=utf-8
+import json
+from pithy import request
+from pithy import config_manager
+
+config = config_manager()
+
+
+class PithyAPP(object):
+
+    def __init__(self):
+        self.base_url = config['BASE_URL']
+
+    @request(url='/pithy-webapi/login', method='post')
+    def login(self, phone=None, password=None):
+        """
+        login api
+        """
+        body = {
+            'phone': phone,
+            'password': password
+        }
