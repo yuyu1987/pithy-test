@@ -1,0 +1,8 @@
+thriftpy
+jinja2
+requests
+sqlalchemy
+objectpath
+click
+pyyaml
+Appium-Python-Client
