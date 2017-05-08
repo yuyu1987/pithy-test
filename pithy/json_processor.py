@@ -4,6 +4,7 @@ import json
 import copy
 import sys
 from objectpath import Tree
+from .utils import format_json
 
 if sys.version.startswith('3'):
     basestring = str
@@ -134,10 +135,9 @@ class _JSONProcessor(dict):
 
 
 class JSONProcessor(_JSONProcessor):
-    raw_dict = {}
 
     def __init__(self, *args, **kwargs):
-        self.raw_dict.clear()
+        self.raw_dict = {}
         args = list(args)
         for index, item in enumerate(args):
             if isinstance(item, basestring):
@@ -157,3 +157,9 @@ class JSONProcessor(_JSONProcessor):
 
     def __call__(self, selectors):
         return Tree(self.raw_dict).execute(selectors)
+
+    def __str__(self):
+        return format_json(self.raw_dict).encode('utf-8')
+
+    def __unicode__(self):
+        return format_json(self.raw_dict)

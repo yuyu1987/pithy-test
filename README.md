@@ -241,18 +241,17 @@ AccountChargeResponse(charge_sn=u'xxxxxx', base_response=BaseResponse(remark=u'\
 这里使用sqlalchemy orm,使用方法如下:
 
 ```python
-# 因执行了sys.module['pithy_db'] = xxx,所以当加载后,可以直接from pithy_db import ...
 from pithy import db
 pithy_db = db("mysql://user:password@host:port/database?charset=utf8", 'pithy_db')
 
 # 使用从模块导入方式
-from pithy_db import o_order, session
-query_result = session.query(o_order).all()
+from pithy_db import order, session
+query_result = session.query(order).all()
 
 # 不使用从模块导入的方式
-o_order = pithy_db.o_order
+order = pithy_db.order
 session = pithy_db.session
-session.query(o_order).all()
+session.query(order).all()
 ```
 
 ## 五、工具类
@@ -323,7 +322,7 @@ print HumanDateTime('2017-02-02 12:12:12 1111').date()
 
 ```python
 # 1、操作JSON的KEY
-from pithy.tools import JSONProcessor
+from pithy import JSONProcessor
 dict_data = {'a': 1, 'b': {'a': [1, 2, 3, 4]}}
 json_data = json.dumps(dict_data)
 result = JSONProcessor(json_data)

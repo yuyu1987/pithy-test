@@ -3,8 +3,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pithy",
-    version="0.0.6",
+    name="pithy-test",
+    version="0.0.7",
     keywords=("interface", "automation", "testing", "pithy"),
     description=u"简化接口测试",
     long_description=u"简化接口测试",
