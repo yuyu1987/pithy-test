@@ -10,11 +10,7 @@ Welcome to pithy-test's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   introduction.rst
+   install.rst
+   quickstart.rst
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
