@@ -5,27 +5,30 @@ pip install pithy-test
 
 # 更新
 pip install -U pithy-test
+
+# 删除
+pip uninstall pithy-test
 ```
 
 ## 二、生成接口测试项目
 
 ```shell
-(pyenv)$  ~ pithy-cli init
+(pyenv)➜  PycharmProjects pithy-cli init
 请选择项目类型,输入api或者app: api
 请输入项目名称,如pithy-api-test: pithy-api-test
 开始创建pithy-api-test项目
 开始渲染...
-开始渲染 api/.gitignore.jinja
-开始渲染 api/apis/__init__.py.jinja
-开始渲染 api/apis/pithy_api.py.jinja
-开始渲染 api/cfg.yaml.jinja
-开始渲染 api/db/__init__.py.jinja
-开始渲染 api/db/pithy_db.py.jinja
-开始渲染 api/README.MD.jinja
-开始渲染 api/requirements.txt.jinja
-开始渲染 api/test_suites/__init__.py.jinja
-开始渲染 api/test_suites/test_login.py.jinja
-开始渲染 api/utils/__init__.py.jinja
+生成 api/.gitignore                   [√]
+生成 api/apis/__init__.py             [√]
+生成 api/apis/pithy_api.py            [√]
+生成 api/cfg.yaml                     [√]
+生成 api/db/__init__.py               [√]
+生成 api/db/pithy_db.py               [√]
+生成 api/README.MD                    [√]
+生成 api/requirements.txt             [√]
+生成 api/test_suites/__init__.py      [√]
+生成 api/test_suites/test_login.py    [√]
+生成 api/utils/__init__.py            [√]
 生成成功,请使用编辑器打开该项目
 ```
 
@@ -33,34 +36,51 @@ pip install -U pithy-test
 ## 三、接口测试
 
 ### 3.1、HTTP接口
-* 在函数中定义按需定义headers, body, params(url参数)
+这个地方,我扩展了python requests库的使用,在原api不变的基础上,把原先的语句调用,扩展成了函数定义,然后对输出进行了包装,下面对比一下两种写法的不同
 
-#### 3.1.1、使用POST方法
+```python
+import requests
+from pithy import request
+
+# 直接使用requets的api
+data = {'key': 'value'}
+requests.get('http://www.xxx.com', data=data)
+
+
+# 使用封装后的request
+@request(url='http://www.xxx.com')
+def get(value):
+    data = {'key': value}
+    return {'data': data}
+```
+
+之所以这么做,是因为这样可以更突显出api,更容易参数化,对session以及响应结果更好的处理
+
+#### 3.1.1、使用POST方法,数据传输为form格式
 
 ```python
 from pithy import request
 
-@request(url='http://xxxx/login', method='post')
-def login(phone=None, password=None):
+@request(url='http://httpbin.org/post', method='post')
+def post(self, key1='value1'):
     """
-    登录
+    post method
     """
-    headers = {'xx': xx, 'xx': xx}
-    body = {
-        'phone': phone,
-        'password': password
+    data = {
+        'key1': key1
     }
+    return dict(data=data)
 
 # 使用
-response = login('13111111111', '123abc').to_json()     # 解析json字符,输出为字典
-response = login('13111111111', '123abc').json          # 解析json字符,输出为字典
-response = login('13111111111', '123abc').to_content()  # 输出为字符串
-response = login('13111111111', '123abc').content       # 输出为字符串
-response = login('13111111111', '123abc').get_cookie()  # 输出cookie对象
-response = login('13111111111', '123abc').cookie        # 输出cookie对象
+response = post('test').to_json()     # 解析json字符,输出为字典
+response = post('test').json          # 解析json字符,输出为字典
+response = post('test').to_content()  # 输出为字符串
+response = post('test').content       # 输出为字符串
+response = post('test').get_cookie()  # 输出cookie对象
+response = post('test').cookie        # 输出cookie对象
 
 # 结果取值, 假设此处response = {'a': 1, 'b': { 'c': [1, 2, 3, 4]}}
-response = login('13111111111', '123abc').json
+response = post('13111111111', '123abc').json
 
 print response.b.c   # 通过点号取值,结果为[1, 2, 3, 4]
 
@@ -70,42 +90,44 @@ for i in response('$..c[@>3]'): # 通过object path取值,结果为选中c字典
     print i
 ```
 
-#### 3.1.2、使用GET方法,数据传输方式为json方式
+#### 3.1.2、使用GET方法
 
 
 ```python
 from pithy import request
 
-@request(url='http://xxxx/login')
-def login(phone=None, password=None):
+@request(url='http://httpbin.org//get')
+def get(self, key1='value1', key2=None):
     """
-    登录
+    get method
     """
-    headers = {'xx': xx, 'xx': xx}
+    if key2 is None:
+        key2 = ['value2', 'value3']
+
     params = {
-        'phone': phone,
-        'password': password
+        'key1': key1,
+        'key2': key2
     }
+    return dict(params=params)
 
 ```
 
 
-#### 3.1.3、使用POST方法,数据传输方式为form方式
+#### 3.1.3、使用POST方法,数据传输方式为json方式
 
 
 ```python
 from pithy import request
 
-@request(url='http://xxxx/login', method='post', data_type='form')
-def login(phone=None, password=None):
+@request(url='http://httpbin.org/post', method='post')
+def post(self, key1='value1'):
     """
-    登录
+    post method
     """
-    headers = {'xx': xx, 'xx': xx}
-    body = {
-        'phone': phone,
-        'password': password
+    data = {
+        'key1': key1
     }
+    return dict(json=data)
 
 ```
 
@@ -115,68 +137,72 @@ def login(phone=None, password=None):
 ```python
 from pithy import request
 
-class PithyApp(object):
-    """
-    PithyApp 相关接口
-    """
+class PithyAPP(object):
+
     def __init__(self):
-        self.session = None  # 定义session，方便后面操作, 同时也可以不定义self.session,会自动创建
-        self.base_url = 'http://xxx.com'  # 指定base_url,也可以不指定
+        self.base_url = 'http://httpbin.org
 
-    @request(url='login', method='form')
-    def _login(self, phone=None, password=None):
+    @request(url='/get')
+    def get(self, key1='value1', key2=None):
         """
-        登录接口
+        get method
         """
-        headers = {'xx': xx, 'xx': xx}
-        body = {
-            'phone': phone,
-            'password': password
+        if key2 is None:
+            key2 = ['value2', 'value3']
+
+        params = {
+            'key1': key1,
+            'key2': key2
         }
-    
-    def login(self, phone=None, password=None):
-        """
-        登录
-        """
-        login_response = self._login('13111111111', '111111').to_json()
-        self.session.cookies.set('session', login_response.data.session)
-    
-    @request(url='pithy-webapi/get_info')
-    def get_info(self):
-        """
-        获取信息
-        """
-        pass
+        return dict(params=params)
 
+    @request(url='post', method='post')
+    def post(self, key1='value1'):
+        """
+        post method
+        """
+        data = {
+            'key1': key1
+        }
+        return dict(data=data)
+
+    @request(url='post', method='post')
+    def json(self, key1='value1'):
+        """
+        post method
+        """
+        data = {
+            'key1': key1
+        }
+        return dict(json=data)
+    
+    @request(url='login', method='post')
+    def _login(username, password):
+        """
+        登录api
+        注: 该方法只是示例,并不能运行,请结合自己的项目使用
+        """
+        data = {
+            'username': username,
+            'password': password
+           }
+         return dict(data=data)
+     
+     def login(username, password):
+        """
+        登录方法
+        注: 该方法只是示例,并不能运行,请结合自己的项目使用
+        """
+        req = self._login(username, password)
+        cookies = res.cookies  # 响应cookies
+        headers = res.headers  # 响应headers
+        self.session.headers.update(xxx=headers.get('xxx')) # 设置session里的headers,设置之后,所有的请求均会带上
+        self.session.cookies.set('xxx', cookies.get('xxx')) # 设置session里的cookies,设置之后,所有的请求均会带上
 
 # 使用，此处两个接口使用同一request session请求
-pithy = Pithy()
-pithy.login('13111111111', '123abc').json
-pithy.get_info().json
-
-
-```
-
-#### 3.1.5、不使用类组织接口，使用指定的session
-
-
-```python
-from pithy import request, make_session
-
-@request(url=config.BASE_URL + '/pithy-webapi/login', method='form')
-def login(phone=None, password=None, session=None):
-    """
-    登录
-    """
-    headers = {'xx': xx, 'xx': xx}
-    body = {
-        'phone': phone,
-        'password': password
-    }
-
-# 调用
-session = make_session()
-response = login('13111111111', '123abc', session=session).json
+app = PithyAPP()
+app.get('value1').to_json()
+app.post('value1).to_json()
 
 ```
 
@@ -260,61 +286,61 @@ session.query(order).all()
 from pithy import HumanDateTime
 
 # 解析时间戳
-print repr(HumanDateTime(1490842267))
-print HumanDateTime(1490842267000)
-print HumanDateTime(1490842267.11111)
-print HumanDateTime(1490842267111.01)
+print(repr(HumanDateTime(1490842267)))
+print(HumanDateTime(1490842267000))
+print(HumanDateTime(1490842267.11111))
+print(HumanDateTime(1490842267111.01))
 
 # 解析字符串格式日期
-print HumanDateTime('2017-02-02')
-print HumanDateTime('Thu Mar 30 14:21:20 2017')
-print HumanDateTime(time.ctime())
-print HumanDateTime('2017-3-3')
-print HumanDateTime('3/3/2016')
-print HumanDateTime('2017-02-02 00:00:00')
+print(HumanDateTime('2017-02-02'))
+print(HumanDateTime('Thu Mar 30 14:21:20 2017'))
+print(HumanDateTime(time.ctime()))
+print(HumanDateTime('2017-3-3'))
+print(HumanDateTime('3/3/2016'))
+print(HumanDateTime('2017-02-02 00:00:00'))
 
 # 解析datetime或date类型时间
-print HumanDateTime(datetime(year=2018, month=11, day=30, hour=11))
-print HumanDateTime(date(year=2018, month=11, day=30))
+print(HumanDateTime(datetime(year=2018, month=11, day=30, hour=11)))
+print(HumanDateTime(date(year=2018, month=11, day=30)))
 
 # 增加减少时间
-print HumanDateTime('2017-02-02').add_day(1)
-print HumanDateTime('2017-02-02').sub_day(1)
-print HumanDateTime('2017-02-02').add_hour(1)
-print HumanDateTime('2017-02-02').sub_hour(1)
-print HumanDateTime('2017-02-02').add(days=1, hours=1, weeks=1, minutes=1, seconds=6)
-print HumanDateTime('2017-02-02').sub(days=1, hours=1, weeks=1, minutes=1, seconds=6)
+print(HumanDateTime('2017-02-02').add_day(1))
+print(HumanDateTime('2017-02-02').sub_day(1))
+print(HumanDateTime('2017-02-02').add_hour(1))
+print(HumanDateTime('2017-02-02').sub_hour(1))
+print(HumanDateTime('2017-02-02').add(days=1, hours=1, weeks=1, minutes=1, seconds=6))
+print(HumanDateTime('2017-02-02').sub(days=1, hours=1, weeks=1, minutes=1, seconds=6))
 
 # 转换为时间戳
-print HumanDateTime(1490842267.11111).timestamp_second
-print HumanDateTime(1490842267.11111).timestamp_microsecond
-print HumanDateTime('2017-02-02 12:12:12.1111').add_day(1).timestamp_microsecond
-print HumanDateTime('2017-02-02 12:12:12 1111').add_day(1).timestamp_microsecond
+print(HumanDateTime(1490842267.11111).timestamp_second)
+print(HumanDateTime(1490842267.11111).timestamp_microsecond)
+print(HumanDateTime('2017-02-02 12:12:12.1111').add_day(1).timestamp_microsecond)
+print(HumanDateTime('2017-02-02 12:12:12 1111').add_day(1).timestamp_microsecond)
 
 # 比较大小
-print HumanDateTime('2017-02-02 12:12:12 1111') < HumanDateTime('2017-02-02 12:12:11 1111')
-print HumanDateTime('2017-02-02 12:12:12 1111') < HumanDateTime('2017-02-02 12:13:11 1111')
-print HumanDateTime('2017-02-02 12:12:12 1111') < '2017-02-02 12:11:11'
-print HumanDateTime('2017-02-02 12:12:12 1111') < '2017-02-02 12:13:11 1111'
-print HumanDateTime('2017-02-02 12:12:12 1111') == '2017-02-02 12:13:11 1111'
-print HumanDateTime('2017-02-02 12:12:12 1111') == '2017-02-02 12:13:12 1111'
-print HumanDateTime('2017-02-02 12:12:12 1111') <= '2017-02-02 12:13:11 1111'
-print HumanDateTime('2017-02-02 12:12:12 1111') >= '2017-02-02 12:13:11 1111'
-print HumanDateTime('2017-02-02 12:12:12 1111') != time.time()
-print HumanDateTime('2017-02-02 12:12:12 1111') <= time.time()
-print HumanDateTime('2017-02-02 12:12:12 1111') >= time.time()
+print(HumanDateTime('2017-02-02 12:12:12 1111') < HumanDateTime('2017-02-02 12:12:11 1111'))
+print(HumanDateTime('2017-02-02 12:12:12 1111') < HumanDateTime('2017-02-02 12:13:11 1111'))
+print(HumanDateTime('2017-02-02 12:12:12 1111') < '2017-02-02 12:11:11')
+print(HumanDateTime('2017-02-02 12:12:12 1111') < '2017-02-02 12:13:11 1111')
+print(HumanDateTime('2017-02-02 12:12:12 1111') == '2017-02-02 12:13:11 1111')
+print(HumanDateTime('2017-02-02 12:12:12 1111') == '2017-02-02 12:13:12 1111')
+print(HumanDateTime('2017-02-02 12:12:12 1111') <= '2017-02-02 12:13:11 1111')
+print(HumanDateTime('2017-02-02 12:12:12 1111') >= '2017-02-02 12:13:11 1111')
+print(HumanDateTime('2017-02-02 12:12:12 1111') != time.time())
+print(HumanDateTime('2017-02-02 12:12:12 1111') <= time.time())
+print(HumanDateTime('2017-02-02 12:12:12 1111') >= time.time())
 
 # 约等于或者接近
-print HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:11 1111')
-print HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:10 1111')
-print HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:10 1111', offset=2)
-print HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:14 1111', offset=2)
+print(HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:11 1111'))
+print(HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:10 1111'))
+print(HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:10 1111', offset=2))
+print(HumanDateTime('2017-02-02 12:12:12 1111').approach('2017-02-02 12:12:14 1111', offset=2))
 
 # 调用datetime的方法和属性
-print HumanDateTime('2017-02-02 12:12:12 1111').day
-print HumanDateTime('2017-02-02 12:12:12 1111').year
-print HumanDateTime('2017-02-02 12:12:12 1111').second
-print HumanDateTime('2017-02-02 12:12:12 1111').date()
+print(HumanDateTime('2017-02-02 12:12:12 1111').day)
+print(HumanDateTime('2017-02-02 12:12:12 1111').year)
+print(HumanDateTime('2017-02-02 12:12:12 1111').second)
+print(HumanDateTime('2017-02-02 12:12:12 1111').date())
 ```
 
 ### 5.2、操作复杂JSON或字典

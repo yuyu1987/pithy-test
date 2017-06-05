@@ -6,6 +6,26 @@
 生成测试项目
 --------------------------------------
 
+查看使用方法
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    >>> pithy-cli
+    Usage: pithy-cli [OPTIONS] COMMAND [ARGS]...
+
+    pithy-cli是一个接口测试项目生成脚手架,功能完善中
+
+    Options:
+    --version  Show the version and exit.
+    --help     Show this message and exit.
+
+    Commands:
+    init  生成接口测试项目 使用方法: $ pithy-cli init # 生成接口测试项目
+
+生成测试项目
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ::
 
     >>> pithy-cli init
@@ -13,52 +33,76 @@
     请输入项目名称,如pithy-api-test: pithy-api-test
     开始创建pithy-api-test项目
     开始渲染...
-    开始渲染 api/.gitignore.jinja
-    开始渲染 api/apis/__init__.py.jinja
-    开始渲染 api/apis/pithy_api.py.jinja
-    开始渲染 api/cfg.yaml.jinja
-    开始渲染 api/db/__init__.py.jinja
-    开始渲染 api/db/pithy_db.py.jinja
-    开始渲染 api/README.MD.jinja
-    开始渲染 api/requirements.txt.jinja
-    开始渲染 api/test_suites/__init__.py.jinja
-    开始渲染 api/test_suites/test_login.py.jinja
-    开始渲染 api/utils/__init__.py.jinja
+    生成 api/.gitignore                   [√]
+    生成 api/apis/__init__.py             [√]
+    生成 api/apis/pithy_api.py            [√]
+    生成 api/cfg.yaml                     [√]
+    生成 api/db/__init__.py               [√]
+    生成 api/db/pithy_db.py               [√]
+    生成 api/README.MD                    [√]
+    生成 api/requirements.txt             [√]
+    生成 api/test_suites/__init__.py      [√]
+    生成 api/test_suites/test_login.py    [√]
+    生成 api/utils/__init__.py            [√]
     生成成功,请使用编辑器打开该项目
 
 .. attention::
   app还未开发，暂时还不能生成
 
 
+生成的项目结构
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+::
+
+    >>> tree pithy-api-test
+    pithy-api-test
+    ├── README.MD
+    ├── apis
+    │   ├── __init__.py
+    │   └── pithy_api.py
+    ├── cfg.yaml
+    ├── db
+    │   ├── __init__.py
+    │   └── pithy_db.py
+    ├── requirements.txt
+    ├── test_suites
+    │   ├── __init__.py
+    │   └── test_login.py
+    └── utils
+        └── __init__.py
+
+    4 directories, 10 files
+
 HTTP API测试
 --------------------------------------
 
-**使用POST方法，传参方式为表单格式**::
+使用POST方法，传参方式为表单格式
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
 
     from pithy import request
 
-    @request(url='http://xxxx/login', method='post')
-    def login(phone=None, password=None):
+    @request(url='http://httpbin.org/post', method='post')
+    def post(self, key1='value1'):
         """
-        登录
+        post method
         """
-        headers = {'xx': xx, 'xx': xx}
         data = {
-            'phone': phone,
-            'password': password
+            'key1': key1
         }
-        return dict(headers=headers, data=data)
+        return dict(data=data)
 
     # 使用
-    response = login('13111111111', '123abc').to_json()     # 解析json字符,输出为字典
-    response = login('13111111111', '123abc').json          # 解析json字符,输出为字典
-    response = login('13111111111', '123abc').to_content()  # 输出为字符串
-    response = login('13111111111', '123abc').content       # 输出为字符串
-    response = login('13111111111', '123abc').get_cookie()  # 输出cookie对象
-    response = login('13111111111', '123abc').cookie        # 输出cookie对象
+    response = post('test').to_json()     # 解析json字符,输出为字典
+    response = post('test').json          # 解析json字符,输出为字典
+    response = post('test').to_content()  # 输出为字符串
+    response = post('test').content       # 输出为字符串
+    response = post('test').get_cookie()  # 输出cookie对象
+    response = post('test').cookie        # 输出cookie对象
 
     # 结果取值, 假设此处response = {'a': 1, 'b': { 'c': [1, 2, 3, 4]}}
-    response = login('13111111111', '123abc').json
+    response = post('13111111111', '123abc').json
 
     print response.b.c   # 通过点号取值,结果为[1, 2, 3, 4]
 
@@ -68,35 +112,117 @@ HTTP API测试
         print i
 
 
-**使用POST方法，传参方式为JSON**::
+使用POST方法，传参方式为JSON
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
 
     from pithy import request
 
-    @request(url='http://xxxx/login', method='post')
-    def login(phone=None, password=None):
+    @request(url='http://httpbin.org/post', method='post')
+    def post(self, key1='value1'):
         """
-        登录
+        post method
         """
-        headers = {'xx': xx, 'xx': xx}
         data = {
-            'phone': phone,
-            'password': password
+            'key1': key1
         }
-        return dict(headers=headers, json=data)
+        return dict(json=data)
 
 
-**GET,URL传参**::
+GET,URL传参
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
 
     from pithy import request
 
-    @request(url='http://xxxx/login')
-    def login(phone=None, password=None):
+    @request(url='http://httpbin.org//get')
+    def get(self, key1='value1', key2=None):
         """
-        登录
+        get method
         """
-        headers = {'xx': xx, 'xx': xx}
+        if key2 is None:
+            key2 = ['value2', 'value3']
+
         params = {
-            'phone': phone,
-            'password': password
+            'key1': key1,
+            'key2': key2
         }
-        return dict(headers=headers, params=params)
+        return dict(params=params)
+
+
+使用类的方式组织用接口
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+使用同一session,指定base_url
+
+::
+
+    from pithy import request
+
+    class PithyAPP(object):
+
+        def __init__(self):
+            self.base_url = 'http://httpbin.org
+
+        @request(url='/get')
+        def get(self, key1='value1', key2=None):
+            """
+            get method
+            """
+            if key2 is None:
+                key2 = ['value2', 'value3']
+
+            params = {
+                'key1': key1,
+                'key2': key2
+            }
+            return dict(params=params)
+
+        @request(url='post', method='post')
+        def post(self, key1='value1'):
+            """
+            post method
+            """
+            data = {
+                'key1': key1
+            }
+            return dict(data=data)
+
+        @request(url='post', method='post')
+        def json(self, key1='value1'):
+            """
+            post method
+            """
+            data = {
+                'key1': key1
+            }
+            return dict(json=data)
+        
+        @request(url='login', method='post')
+        def _login(username, password):
+            """
+            登录api
+            注: 该方法只是示例,并不能运行,请结合自己的项目使用
+            """
+            data = {
+                'username': username,
+                'password': password
+            }
+            return dict(data=data)
+        
+        def login(username, password):
+            """
+            登录方法
+            注: 该方法只是示例,并不能运行,请结合自己的项目使用
+            """
+            req = self._login(username, password)
+            cookies = res.cookies  # 响应cookies
+            headers = res.headers  # 响应headers
+            self.session.headers.update(xxx=headers.get('xxx')) # 设置session里的headers,设置之后,所有的请求均会带上
+            self.session.cookies.set('xxx', cookies.get('xxx')) # 设置session里的cookies,设置之后,所有的请求均会带上
+
+    # 使用，此处两个接口使用同一request session请求
+    app = PithyAPP()
+    app.get('value1').to_json()
+    app.post('value1).to_json()
