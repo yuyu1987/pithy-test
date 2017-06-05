@@ -25,8 +25,14 @@ def generate_project(project_name, project_type):
         for template in templates:
             target_file_name = os.path.splitext(template)[0]
             target_full_name = os.path.join(project_path, target_file_name[len(project_type) + 1:])
-            echo(style(u'开始渲染 %s' % template, fg='green'))
-            render_template(jinja_env, template, target_full_name, project_name=project_name)
+            try:
+                render_template(jinja_env, template, target_full_name, project_name=project_name)
+                echo(style(u'生成 %-32s ' % target_file_name, fg='green') +
+                     style(u'[√]', fg='blue'))
+            except Exception as e:
+                echo(style(u'生成 %-32s ' % target_file_name, fg='red') +
+                     style(u'[×]\n', fg='blue'))
+                raise Exception
     echo(style(u'生成成功,请使用编辑器打开该项目', fg='red'))
 
 

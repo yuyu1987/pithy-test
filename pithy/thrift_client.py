@@ -5,7 +5,7 @@ import sys
 import thriftpy
 from thriftpy.rpc import make_client
 
-log_format = u'''
+LOG_FORMAT = u'''
 ********************************************
 
 1、请求方法:
@@ -72,7 +72,7 @@ def thrift_service_wrapper(func):
         finally:
             client.close()
 
-        print(log_format.format(thrift_module_name=thrift_module.__name__,
+        print(LOG_FORMAT.format(thrift_module_name=thrift_module.__name__,
                                 service_name=service_name,
                                 function_name=function_name,
                                 thrift_kwargs=thrift_kwargs,

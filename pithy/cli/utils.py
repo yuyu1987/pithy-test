@@ -46,6 +46,7 @@ def get_templates(project_type):
 
     project_template_dir = os.path.join(template_dir, project_type)
     get_file_name('', project_template_dir)
+    templates = [file_name.replace('\\', '/') for file_name in templates]
     return templates
 
 

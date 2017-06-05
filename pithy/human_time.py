@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 import time
 
 # 日期格式
@@ -311,6 +311,9 @@ class HumanDateTime(object):
 
     def __str__(self):
         return str(self._datetime)
+
+    def __unicode__(self):
+        return unicode(self._datetime)
 
     def __repr__(self):
         return repr(self._datetime)

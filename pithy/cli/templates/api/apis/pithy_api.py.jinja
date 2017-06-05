@@ -12,12 +12,36 @@ class PithyAPP(object):
     def __init__(self):
         self.base_url = config['BASE_URL']
 
-    @request(url='/pithy-webapi/login', method='post')
-    def login(self, phone=None, password=None):
+    @request(url='/get')
+    def get(self, key1='value1', key2=None):
         """
-        login api
+        get method
         """
-        body = {
-            'phone': phone,
-            'password': password
+        if key2 is None:
+            key2 = ['value2', 'value3']
+
+        params = {
+            'key1': key1,
+            'key2': key2
         }
+        return dict(params=params)
+
+    @request(url='post', method='post')
+    def post(self, key1='value1'):
+        """
+        post method
+        """
+        data = {
+            'key1': key1
+        }
+        return dict(data=data)
+
+    @request(url='post', method='post')
+    def json(self, key1='value1'):
+        """
+        post method
+        """
+        data = {
+            'key1': key1
+        }
+        return dict(json=data)

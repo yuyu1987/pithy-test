@@ -1,8 +1,9 @@
 thriftpy
 jinja2
-requests
+requests>=2.4.2
 sqlalchemy
 objectpath
 click
 pyyaml
 Appium-Python-Client
+records

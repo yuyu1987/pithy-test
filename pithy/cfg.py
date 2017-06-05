@@ -16,16 +16,15 @@ class Config(object):
     使用:
     from pithy import get_config
     config = get_config()  # 使用默认配置文件名cfg.yaml
-    config = get_config('sargeras.yaml')  # 使用自定义配置文件
-    config = get_config(env='alpha')  # 读取alpha环境变量
+    config = get_config('pithy.yaml')  # 使用自定义配置文件
 
-    print config['sargeras_db]['host']  # 取值
+    print config['pithy_db]['host']  # 取值
     ...
 
     """
     config_object_instance = {}
 
-    def __new__(cls, config_file_name='cfg.yaml', env='beta', *args, **kwargs):
+    def __new__(cls, config_file_name='cfg.yaml', *args, **kwargs):
         if config_file_name not in cls.config_object_instance.keys():
             config_file_path = config_file_name
             if not os.path.exists(config_file_name):
@@ -40,10 +39,7 @@ class Config(object):
 
             cls.config_object_instance[config_file_name] = yaml.load(open(config_file_path))
 
-        sys_env = os.getenv('env')
-        if sys_env:
-            env = sys_env
-        return cls.config_object_instance[config_file_name][env]
+        return cls.config_object_instance[config_file_name]
 
     def __getitem__(self, item):
         return self[item]
