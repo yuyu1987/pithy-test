@@ -11,6 +11,13 @@ pip安装
     >>> pip install pithy-test
     >>> pip install -U pithy-test
 
+删除
+--------------------------------------
+
+::
+
+    >>> pip uninstall pithy-test
+    
 获取源码
 --------------------------------------
 

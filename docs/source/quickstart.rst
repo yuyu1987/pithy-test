@@ -75,6 +75,31 @@
 
 HTTP API测试
 --------------------------------------
+这个地方对python requests进行了封装，在原api不变的基础上，把原先的语句调用方式，扩展成了函数定义，然后对输出进行了包装，下面对比一下两种写法的不同
+
+::
+
+    import requests
+    from pithy import request
+
+    # 直接使用requets的api
+    data = {'key': 'value'}
+    requests.get('http://www.xxx.com', data=data)
+
+
+    # 使用封装后的request
+    @request(url='http://www.xxx.com')
+    def get(value):
+        data = {'key': value}
+        return {'data': data}
+
+之所以这么做,是因为这样可以更突显出api,更容易参数化,对session以及响应结果更好的处理
+
+
+参数读取的大致流程如下:
+
+.. image:: /_static/flow.png
+  :width: 600 px
 
 使用POST方法，传参方式为表单格式
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

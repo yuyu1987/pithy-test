@@ -3,6 +3,8 @@
 import yaml
 import os
 import sys
+from configobj import ConfigObj
+from .json_processor import JSONProcessor
 
 
 class Config(object):
@@ -18,28 +20,39 @@ class Config(object):
     config = get_config()  # 使用默认配置文件名cfg.yaml
     config = get_config('pithy.yaml')  # 使用自定义配置文件
 
-    print config['pithy_db]['host']  # 取值
+    print config.pithy_db.host  # 取值
     ...
 
     """
     config_object_instance = {}
 
-    def __new__(cls, config_file_name='cfg.yaml', *args, **kwargs):
-        if config_file_name not in cls.config_object_instance.keys():
-            config_file_path = config_file_name
-            if not os.path.exists(config_file_name):
-                config_file_path0 = os.path.join(sys.path[0], config_file_name)
-                config_file_path1 = os.path.join(sys.path[1], config_file_name)
+    def __new__(cls, file_name='cfg.yaml', *args, **kwargs):
+        if file_name not in cls.config_object_instance.keys():
+            config_file_path = file_name
+            if not os.path.exists(file_name):
+                config_file_path0 = os.path.join(sys.path[0], file_name)
+                config_file_path1 = os.path.join(sys.path[1], file_name)
                 if os.path.exists(config_file_path0):
                     config_file_path = config_file_path0
                 elif os.path.exists(config_file_path1):
                     config_file_path = config_file_path1
                 else:
-                    raise OSError(u'未找到指定的配置文件,请在项目根目录下放置cfg.yaml 或 指定路径')
+                    raise OSError(u'未找到指定的配置文件,请在项目根目录下放置或指定路径')
+            if file_name.endswith('.yaml'):
+                cls.config_object_instance[file_name] = yaml.load(open(config_file_path))
+            elif file_name.endswith(('.cfg', '.ini', '.conf')):
+                cls.config_object_instance[file_name] = ConfigObj(config_file_path)
+            else:
+                raise ValueError(u'不支持的配置文件类型')
 
-            cls.config_object_instance[config_file_name] = yaml.load(open(config_file_path))
-
-        return cls.config_object_instance[config_file_name]
+        return JSONProcessor(cls.config_object_instance[file_name])
 
     def __getitem__(self, item):
         return self[item]
+
+
+from pithy import config_manager
+
+config = config_manager()
+print(config.db)
+print(config.db.pithy_db)

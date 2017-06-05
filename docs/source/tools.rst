@@ -5,8 +5,50 @@
 
 配置管理
 --------------------------------------
-读取项目根目录下，或者当前目录下的配置文件，默认文件名为cfg.yaml
+读取项目根目录下，或者当前目录下的配置文件，默认文件名为 ``cfg.yaml`` ，可传入 ``file_name`` 改变，目前支持解析的配置文件类型有 ``.ini`` 、``.yaml`` 、``.cfg`` 、``.conf``
 
+yaml解析
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+例如cfg.yaml配置文件内容如下::
+
+    db:
+        pithy_db:
+            host: 127.0.0.1
+            port: 3306
+            username: user
+            password: 111111
+
+使用方法如下::
+
+    from pithy import config_manager
+
+    config = config_manager()
+    print(config.db)
+    print(config.db.pithy_db)
+
+
+ini解析
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+例如cfg.ini配置文件内容如下::
+
+    [pithy_db]
+
+    host = 127.0.0.1
+    port = 5432
+    username = postgres
+    password = postgres
+
+
+使用方法如下::
+
+    from pithy import config_manager
+
+    config = config_manager(file_name='cfg.ini')
+    print(config.db.pithy_db)
+
+conf和cfg格式与ini使用方法一致
 
 
 日期处理
