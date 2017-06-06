@@ -49,10 +49,3 @@ class Config(object):
 
     def __getitem__(self, item):
         return self[item]
-
-
-from pithy import config_manager
-
-config = config_manager()
-print(config.db)
-print(config.db.pithy_db)
