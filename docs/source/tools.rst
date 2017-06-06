@@ -196,7 +196,105 @@ conf和cfg格式与ini使用方法一致
 
 ::
 
+    from pithy import JSONProcessor
     dict_data = {'a': 1, 'b': {'a': [1, 2, 3, 4]}}
     result = JSONProcessor(dict_data)
     print result.a     # 1
     print result.b.a   # [1, 2, 3, 4]
+
+object path取值
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    raw_dict = {
+        'key1':{
+            'key2':{
+                'key3': [1, 2, 3, 4, 5, 6, 7, 8]
+            }
+        }
+    }
+
+    jp = JSONProcessor(raw_dict)
+    for i in jp('$..key3[@>3]'):
+        print i
+
+结果是::
+     
+     4 
+     5 
+     6 
+     7 
+     8
+
+
+其它用法
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    dict_1 = {'a': 'a'}
+    json_1 = '{"b": "b"}'
+    jp = JSONProcessor(dict_1, json_1, c='c')
+    print(jp)
+
+输出为::
+
+    {
+        "a": "a",
+        "b": "b",
+        "c": "c"
+    }
+
+美化JSON打印
+--------------------------------------
+该函数是格式化打印 ``JSON`` 或 ``字典`` ，并对JSON中的unicode或utf-8字符进行转换
+
+使用方法如下::
+
+    from pithy import pretty_print
+    d = {
+        "args": {
+            "name": "鱼鱼"
+        },
+        "headers": {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Encoding": "gzip, deflate, sdch",
+            "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4",
+            "Connection": "close",
+            "Cookie": "_gauges_unique_day=1; _gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
+            "Dnt": "1",
+            "Host": "httpbin.org",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+        },
+        "origin": "157.119.234.165",
+        "url": "http://httpbin.org/get"
+    }
+    print(d)
+    print('\n\n)
+    pretty_print(d) # 该处也可以传入JSON字符串
+
+输出结果为::
+
+        {'origin': '157.119.234.165', 'headers': {'Dnt': '1', 'Connection': 'close', 'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4', 'Accept-Encoding': 'gzip, deflate, sdch', 'Cookie': '_gauges_unique_day=1; _gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36', 'Host': 'httpbin.org', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Upgrade-Insecure-Requests': '1'}, 'args': {'name': '\xe9\xb1\xbc\xe9\xb1\xbc'}, 'url': 'http://httpbin.org/get'}
+        
+
+        {
+            "args": {
+                "name": "鱼鱼"
+            },
+            "headers": {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, sdch",
+                "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4",
+                "Connection": "close",
+                "Cookie": "_gauges_unique_day=1; _gauges_unique_month=1; _gauges_unique_year=1; _gauges_unique=1",
+                "Dnt": "1",
+                "Host": "httpbin.org",
+                "Upgrade-Insecure-Requests": "1",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+            },
+            "origin": "157.119.234.165",
+            "url": "http://httpbin.org/get"
+        }

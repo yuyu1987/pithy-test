@@ -6,5 +6,6 @@ from .db import DB as db
 from .human_time import HumanDateTime
 from .json_processor import JSONProcessor
 from .cfg import Config
+from .utils import pretty_print
 
 get_config = config_manager = Config
