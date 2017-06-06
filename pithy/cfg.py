@@ -37,13 +37,13 @@ class Config(object):
                 elif os.path.exists(config_file_path1):
                     config_file_path = config_file_path1
                 else:
-                    raise OSError(u'未找到指定的配置文件,请在项目根目录下放置或指定路径')
+                    raise OSError('can not find config file !')
             if file_name.endswith('.yaml'):
                 cls.config_object_instance[file_name] = yaml.load(open(config_file_path))
             elif file_name.endswith(('.cfg', '.ini', '.conf')):
                 cls.config_object_instance[file_name] = ConfigObj(config_file_path)
             else:
-                raise ValueError(u'不支持的配置文件类型')
+                raise ValueError('Unsupported configuration file type')
 
         return JSONProcessor(cls.config_object_instance[file_name])
 

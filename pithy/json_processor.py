@@ -137,7 +137,6 @@ class _JSONProcessor(dict):
 class JSONProcessor(_JSONProcessor):
 
     def __init__(self, *args, **kwargs):
-        self.raw_dict = {}
         args = list(args)
         for index, item in enumerate(args):
             if isinstance(item, basestring):
@@ -146,20 +145,13 @@ class JSONProcessor(_JSONProcessor):
                 except:
                     raise ValueError(u'not valid json string')
 
-        for i in args:
-            if isinstance(i, dict):
-                self.raw_dict.update(i)
-
-        for key, val in kwargs.items():
-            self.raw_dict[key] = val
-
-        self.update(_JSONProcessor(self.raw_dict))
+        super(JSONProcessor, self).__init__(*args, **kwargs)
 
     def __call__(self, selectors):
-        return Tree(self.raw_dict).execute(selectors)
+        return Tree(json.loads(json.dumps(self))).execute(selectors)
 
     def __str__(self):
-        return format_json(self.raw_dict).encode('utf-8')
+        return format_json(self).encode('utf-8')
 
     def __unicode__(self):
-        return format_json(self.raw_dict)
+        return format_json(self)
