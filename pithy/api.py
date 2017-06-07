@@ -36,8 +36,12 @@ class HttpRequest(object):
         def fun_wrapper(*args, **kwargs):
             self.func_return = self.func(*args, **kwargs) or {}
             self.func_im_self = args[0] if self.is_class else object
-            self.func_doc = self.func.__doc__ or self.func.__name__
             self.decorator_args.update(self.func_return)
+            try:
+                self.func.__doc__ = self.func.__doc__.decode('utf-8')
+            except:
+                pass
+            self.func_doc = (self.func.__doc__ or self.func.__name__).strip()
             self.create_url()
             self.create_session()
             return Request(self.method, self.url, self.session, self.func_doc, self.decorator_args)
@@ -101,7 +105,7 @@ class Request(object):
         self.method = method
         self.url = url
         self.session = session
-        self.doc = doc.split()
+        self.doc = doc
         self.args = args
         self.response = None
         self.log_content = [

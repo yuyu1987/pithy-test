@@ -1,4 +1,4 @@
-## 一、安装&更新
+## 安装&更新
 ```sh
 # 安装
 pip install pithy-test
@@ -10,10 +10,14 @@ pip install -U pithy-test
 pip uninstall pithy-test
 ```
 
-## 二、生成接口测试项目
+## 项目文档
+[http://pithy-test.readthedocs.io/](http://pithy-test.readthedocs.io/)
+
+
+## 生成接口测试项目
 
 ```shell
-(pyenv)➜  PycharmProjects pithy-cli init
+(pyenv)➜  pithy-cli init
 请选择项目类型,输入api或者app: api
 请输入项目名称,如pithy-api-test: pithy-api-test
 开始创建pithy-api-test项目
@@ -33,9 +37,9 @@ pip uninstall pithy-test
 ```
 
 
-## 三、接口测试
+## 接口测试
 
-### 3.1、HTTP接口
+### HTTP接口
 这个地方,我扩展了python requests库的使用,在原api不变的基础上,把原先的语句调用,扩展成了函数定义,然后对输出进行了包装,下面对比一下两种写法的不同
 
 ```python
@@ -56,7 +60,7 @@ def get(value):
 
 之所以这么做,是因为这样可以更突显出api,更容易参数化,对session以及响应结果更好的处理
 
-#### 3.1.1、使用POST方法,数据传输为form格式
+#### 使用POST方法,数据传输为form格式
 
 ```python
 from pithy import request
@@ -90,7 +94,7 @@ for i in response('$..c[@>3]'): # 通过object path取值,结果为选中c字典
     print i
 ```
 
-#### 3.1.2、使用GET方法
+#### 使用GET方法
 
 
 ```python
@@ -113,7 +117,7 @@ def get(self, key1='value1', key2=None):
 ```
 
 
-#### 3.1.3、使用POST方法,数据传输方式为json方式
+#### 使用POST方法,数据传输方式为json方式
 
 
 ```python
@@ -131,7 +135,7 @@ def post(self, key1='value1'):
 
 ```
 
-#### 3.1.4、使用类的方式组织用接口,使用同一session,指定base_url
+#### 使用类的方式组织用接口,使用同一session,指定base_url
 
 
 ```python
@@ -206,7 +210,7 @@ app.post('value1).to_json()
 
 ```
 
-### 3.2、thrift接口
+### thrift接口
 thrift接口测试对thriftpy进行了简单封装,不需要再去构造struct,直接使用字典的形式就可以调用
 #### 使用方法:
 * 定义一个类,类名和thrift service名要一致,在类上方使用thrift_client装饰器,然后在初始化方法中定义host和port以及指定thrift文件
@@ -263,25 +267,8 @@ AccountChargeResponse(charge_sn=u'xxxxxx', base_response=BaseResponse(remark=u'\
 ```
 
 
-## 四、数据库相关
-这里使用sqlalchemy orm,使用方法如下:
-
-```python
-from pithy import db
-pithy_db = db("mysql://user:password@host:port/database?charset=utf8", 'pithy_db')
-
-# 使用从模块导入方式
-from pithy_db import order, session
-query_result = session.query(order).all()
-
-# 不使用从模块导入的方式
-order = pithy_db.order
-session = pithy_db.session
-session.query(order).all()
-```
-
-## 五、工具类
-### 5.1、操作日期函数 
+## 工具类
+### 操作日期函数 
 ```python
 from pithy import HumanDateTime
 
@@ -343,7 +330,7 @@ print(HumanDateTime('2017-02-02 12:12:12 1111').second)
 print(HumanDateTime('2017-02-02 12:12:12 1111').date())
 ```
 
-### 5.2、操作复杂JSON或字典
+### 操作复杂JSON或字典
 优化JSON字符串和字典的取值方式
 
 ```python

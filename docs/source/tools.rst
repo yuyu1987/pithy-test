@@ -186,10 +186,6 @@ conf和cfg格式与ini使用方法一致
     print result.a     # 结果：1
     print result.b.a   # 结果：[1, 2, 3, 4]
 
-    # 这里使用的object path的取值方式,详细语法见:http://objectpath.org/reference.html
-    for i in result('$..a[@>3]'):  # 结果： 4
-        print i
-
 
 操作字典的KEY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,9 +200,11 @@ conf和cfg格式与ini使用方法一致
 
 object path取值
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+这里使用的object path的取值方式,详细语法见:http://objectpath.org/reference.html
 
 ::
 
+    from pithy import JSONProcessor
     raw_dict = {
         'key1':{
             'key2':{
