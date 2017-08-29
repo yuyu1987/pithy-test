@@ -72,8 +72,6 @@ class _JSONProcessor(dict):
         return self.__getitem__(item)
 
     def __getitem__(self, name):
-        if name not in self:
-            return _JSONProcessor(__parent=self, __key=name)
         return super(_JSONProcessor, self).__getitem__(name)
 
     def __delattr__(self, name):

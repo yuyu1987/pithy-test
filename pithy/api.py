@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
+import logging
 from requests.sessions import Session
 from functools import wraps
 from jinja2 import Template
@@ -12,6 +13,9 @@ import inspect
 
 from .utils import format_json
 from .json_processor import JSONProcessor
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class HttpRequest(object):
@@ -169,7 +173,7 @@ class Request(object):
         return self.to_content()
 
     def _log(self):
-        print(Template(LOG_TEMPLATE).render(items=enumerate(self.log_content)))
+        LOGGER.info(Template(LOG_TEMPLATE).render(items=enumerate(self.log_content)))
 
     def _request(self):
         if not self.response:
