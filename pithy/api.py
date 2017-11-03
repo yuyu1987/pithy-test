@@ -5,6 +5,7 @@ from requests.sessions import Session
 from functools import wraps
 from jinja2 import Template
 from copy import deepcopy
+from collections import OrderedDict
 try:
     from urlparse import urljoin
 except ImportError:
@@ -48,6 +49,7 @@ class HttpRequest(object):
             self.func_doc = (self.func.__doc__ or self.func.__name__).strip()
             self.create_url()
             self.create_session()
+            self.session.headers.update(getattr(self.func_im_self, 'headers', {}))
             return Request(self.method, self.url, self.session, self.func_doc, self.decorator_args)
         return fun_wrapper
 
@@ -77,6 +79,7 @@ class HttpRequest(object):
             self.session = self.func_return.get('session')
         else:
             self.session = Session()
+
 
 request = HttpRequest
 
@@ -118,27 +121,48 @@ class Request(object):
             dict(desc=u'请求方法', value=method),
         ]
 
-        headers = deepcopy(args.get('headers', {}))
-        headers.update(session.headers)
+        for i in ['params', 'data', 'json']:
+            if args.get(i):
+                args[i] = self.fixation_order(args[i])
+
+    def get_arg(self, arg):
+        return self.args.get(arg)
+
+    def add_headers(self, **kwargs):
+        if self.args.get('headers'):
+            self.args['headers'].update(kwargs)
+        else:
+            self.args['headers'] = kwargs
+
+    @staticmethod
+    def fixation_order(d):
+        o = OrderedDict()
+        for i in d:
+            o[i] = d[i]
+        return o
+
+    def prepare_log(self):
+        headers = deepcopy(self.args.get('headers', {}))
+        headers.update(self.session.headers)
 
         if headers:
             self.log_content.append(dict(
                 desc=u'请求headers', value=format_json(headers)
             ))
 
-        if args.get('params'):
+        if self.args.get('params'):
             self.log_content.append(dict(
-                desc=u'请求url参数', value=format_json(args.get('params'))
+                desc=u'请求url参数', value=format_json(self.args.get('params'))
             ))
 
-        if args.get('data'):
+        if self.args.get('data'):
             self.log_content.append(dict(
-                desc=u'body参数', value=format_json(args.get('data'))
+                desc=u'body参数', value=format_json(self.args.get('data'))
             ))
 
-        if args.get('json'):
+        if self.args.get('json'):
             self.log_content.append(dict(
-                desc=u'body参数', value=format_json(args.get('json'))
+                desc=u'body参数', value=format_json(self.args.get('json'))
             ))
 
     @context
@@ -177,6 +201,7 @@ class Request(object):
 
     def _request(self):
         if not self.response:
+            self.prepare_log()
             self.response = self.session.request(self.method, self.url, **self.args)
 
     def __getattr__(self, item):
