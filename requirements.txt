@@ -1,10 +1,7 @@
-thriftpy
 jinja2
 requests>=2.4.2
-sqlalchemy
 objectpath
 click
 pyyaml
-Appium-Python-Client
 records
 configobj

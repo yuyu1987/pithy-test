@@ -2,8 +2,8 @@
 # coding=utf-8
 import logging
 from .api import request, make_session
-from .thrift_client import thrift_client
-from .db import DB as db
+# from .thrift_client import thrift_client
+# from .db import DB as db
 from .human_time import HumanDateTime
 from .json_processor import JSONProcessor
 from .cfg import Config
