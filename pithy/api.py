@@ -41,7 +41,7 @@ class HttpRequest(object):
         def fun_wrapper(*args, **kwargs):
             self.func_return = self.func(*args, **kwargs) or {}
             self.func_im_self = args[0] if self.is_class else object
-            self.decorator_args.update(self.func_return)
+
             try:
                 self.func.__doc__ = self.func.__doc__.decode('utf-8')
             except:
@@ -50,6 +50,7 @@ class HttpRequest(object):
             self.create_url()
             self.create_session()
             self.session.headers.update(getattr(self.func_im_self, 'headers', {}))
+            self.decorator_args.update(self.func_return)
             return Request(self.method, self.url, self.session, self.func_doc, self.decorator_args)
         return fun_wrapper
 
@@ -59,9 +60,8 @@ class HttpRequest(object):
         """
 
         # 使用在函数中定义的url变量,如果没有,使用装饰器中定义的
-
         base_url = getattr(self.func_im_self, 'base_url', '')
-        self.url = self.func_return.get('url') or self.url
+        self.url = self.func_return.pop('url', None) or self.url
         self.url = urljoin(base_url, self.url)
 
     def create_session(self):
