@@ -16,9 +16,6 @@ from .utils import format_json
 from .json_processor import JSONProcessor
 
 
-LOGGER = logging.getLogger(__name__)
-
-
 class HttpRequest(object):
     def __init__(self, url='', method='get', **kwargs):
         self.url = url
@@ -121,7 +118,7 @@ class Request(object):
             dict(desc=u'请求方法', value=method),
         ]
 
-        for i in ['params', 'data', 'json']:
+        for i in ['params', 'data']:
             if args.get(i):
                 args[i] = self.fixation_order(args[i])
 
@@ -197,7 +194,7 @@ class Request(object):
         return self.to_content()
 
     def _log(self):
-        LOGGER.info(Template(LOG_TEMPLATE).render(items=enumerate(self.log_content)))
+        print(Template(LOG_TEMPLATE).render(items=enumerate(self.log_content)))
 
     def _request(self):
         if not self.response:
@@ -212,3 +209,11 @@ class Request(object):
 
 def make_session():
     return Session()
+
+
+class response(Request):
+    def __new__(cls, **kwargs):
+        """
+        :rtype: Request
+        """
+        return dict(**kwargs)
