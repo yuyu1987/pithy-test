@@ -65,5 +65,5 @@ def render_template(jinja_env, template, target_full_name, **kwargs):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    with open(target_full_name, 'w') as f:
+    with open(target_full_name, 'wb') as f:
         f.write(content)
