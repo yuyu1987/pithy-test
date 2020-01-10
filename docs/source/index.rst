@@ -13,7 +13,6 @@ Welcome to pithy-test's documentation!
    introduction.rst
    install.rst
    quickstart.rst
-   thrift.rst
    tools.rst
 
 
