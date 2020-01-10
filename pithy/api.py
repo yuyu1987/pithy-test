@@ -30,7 +30,7 @@ class HttpRequest(object):
         self.func = func
         self.is_class = False
         try:
-            if inspect.getargspec(func).args[0] == 'self':
+            if inspect.getfullargspec(func).args[0] == 'self':
                 self.is_class = True
         except IndexError:
             pass
