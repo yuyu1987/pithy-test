@@ -6,6 +6,7 @@ from functools import wraps
 from jinja2 import Template
 from copy import deepcopy
 from collections import OrderedDict
+
 try:
     from urlparse import urljoin
 except ImportError:
@@ -35,6 +36,7 @@ class HttpRequest(object):
         except IndexError:
             pass
 
+        @wraps(func)
         def fun_wrapper(*args, **kwargs):
             self.func_return = self.func(*args, **kwargs) or {}
             self.func_im_self = args[0] if self.is_class else object
@@ -49,6 +51,7 @@ class HttpRequest(object):
             self.session.headers.update(getattr(self.func_im_self, 'headers', {}))
             self.decorator_args.update(self.func_return)
             return Request(self.method, self.url, self.session, self.func_doc, self.decorator_args)
+
         return fun_wrapper
 
     def create_url(self):
@@ -97,6 +100,7 @@ def context(func):
         finally:
             self._log()
         return res
+
     return wrapper
 
 
