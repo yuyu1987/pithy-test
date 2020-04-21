@@ -4,10 +4,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="pithy-test",
-    version="0.0.18",
+    version="0.0.19",
     keywords=("interface", "automation", "testing", "pithy"),
-    description=u"简化接口测试",
-    long_description=u"简化接口测试",
+    description="Simplify interface testing",
+    long_description="Simplify interface testing",
     url="https://github.com/yuyu1987/pithy-test",
     author="coolfish",
     author_email="hgbaczt@gmail.com",

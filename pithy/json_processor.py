@@ -149,7 +149,7 @@ class JSONProcessor(_JSONProcessor):
         return Tree(json.loads(json.dumps(self))).execute(selectors)
 
     def __str__(self):
-        return format_json(self).encode('utf-8')
+        return format_json(self)
 
     def __unicode__(self):
         return format_json(self)
