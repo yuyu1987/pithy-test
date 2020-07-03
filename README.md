@@ -1,3 +1,5 @@
+# 该项目不再继续更新维护了，请转到新项目 https://github.com/sunhetao/walnuts ，感谢
+
 ## 安装&更新
 ```sh
 # 安装
